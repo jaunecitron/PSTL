@@ -1,0 +1,39 @@
+type parametre = {nom : string ; valeur : float};;
+type parametres = parametre list;;
+
+class param_test p =
+object
+  val mutable p_list = p :: []
+  method to_string =
+    let rec assemble l =
+      match l with
+	[] -> ""
+      | h::t -> match h with
+	        {nom = nom; valeur = valeur} -> nom ^ string_of_float(valeur)
+    in assemble p_list
+  method add_parameter p =
+    let rec add l =
+      match l with
+	[] -> p :: []
+      | h::t -> h :: add t
+    in add p_list
+end;;
+
+class instruction nom param = object
+      val mutable nom = nom
+      val mutable param = param
+      method to_string = nom ^ " " ^ param#to_string
+	
+end;;
+
+class point x y =
+object
+  val mutable x = x
+  val mutable y = y
+  method get_x = x
+  method get_y = y
+  method incr_x = x <- (x +. 1.0)
+  method incr_y = y <- (y +. 1.0)
+  method distance p2 = (p2#get_x -. x) 
+end;;
+  

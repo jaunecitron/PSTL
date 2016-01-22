@@ -1,0 +1,10 @@
+type parameter = {letter:string;value:float};;
+class parameters = object
+  val parameter_list = [];
+  method addParameter parameter =
+    let rec add l =
+      match l with
+	[] -> parameter :: []
+      | h::t -> add t
+    in add parameter_list
+end
