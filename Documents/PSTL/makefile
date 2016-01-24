@@ -1,20 +1,25 @@
-CAMLC=ocamlc
-COMPFLAGS= -i
-FILES= t1.cmo t2.cmo t3.cmo
-FILEEXE=test
-BIN=bin/
+CAML=ocamlc
 SRC=src/
+OBJ=obj/
 LIB=lib/
 INCLUDE=include/
+BIN=bin/
+EXEC=$(BIN)test
+
+SOURCE_ML=$(SRC)instruction.ml $(SRC)env.ml $(SRC)program.ml 
+SOURCE_MLI=$(LIB)instruction.mli $(LIB)env.mli $(LIB)program.mli
+SOURCE_CMI=$(INCLUDE)instruction.cmi $(INCLUDE)env.cmi $(INCLUDE)program.cmi
+SOURCE_CMO=$(OBJ)instruction.cmo $(OBJ)env.cmo $(OBJ)program.cmo
 
 
-all: $(FILES)
+all: $(EXEC)
 
-.SUFFIXES: .ml .mli .cmo .cmi .cmx
+$(OBJ)%.cmo: $(INCLUDE)%.cmi $(SRC)%.ml
+	$(CAML) -o $@ -c $?
+$(INCLUDE)%.cmi: $(LIB)%.mli
+	$(CAML) -o $@ -c $?
+$(EXEC): $(SOURCE_CMO)
+	$(CAML) -o $@ -c $?
 
-$(CAMLC) -o $(FILEEXE) $(FILES)
-
-.ml.cmo:
-$(CAMLC) $(COMPFLAGS) -c $<
-.mli.cmi:
-$(CAMLC) $(COMPFLAGS) -c $<
+clean:
+	rm $(INCLUDE)*.cmi $(OBJ)*.cmo $(SRC)*~ $(EXEC) 
