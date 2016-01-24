@@ -162,7 +162,7 @@ let _ =
   print_string (env_to_string cur_env);
   let prog_final = ref prog in
   while cur_env.height < 10. do
-    prog_final := List.append !prog_final (print_polygone cur_env polygone);
+    prog_final := List.append !prog_final (print_polygone_2 cur_env polygone);
     prog_final := add_instr (lift cur_env) !prog_final;
     print_string (env_to_string cur_env);
   done;
