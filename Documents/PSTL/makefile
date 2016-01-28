@@ -11,8 +11,8 @@ SOURCE_CMO=$(SRC)point.cmo $(SRC)instruction.cmo $(SRC)environment.cmo $(SRC)pro
 
 all: $(EXEC)
 
-$(OBJ)%.cmo: $(SRC)%.ml
-	$(CAML) -c $?
+$(SRC)%.cmo: $(SRC)%.ml
+	$(CAML) -I $(SRC) -c $?
 
 $(EXEC): $(SOURCE_CMO)
 	$(CAML) $? -o $@

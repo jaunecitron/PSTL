@@ -18,7 +18,7 @@ let env_init =
   {
     pos={x=0.;y=0.};
     positionning=0;
-    height=0.;
+    height=0.3;
     lift_step=0.1;
     speed_G0=9000.;
     speed_G1=1200.;
