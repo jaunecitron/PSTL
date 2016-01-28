@@ -30,6 +30,9 @@ type env=
     mutable positionning : int; (* 0 to absolute; 1 to relative *)
     mutable height : float;
     mutable height_step : float;
+    mutable speed_G0 : float;
+    mutable speed_G1 : float;
+    mutable speed_extruder_rate : float;
     mutable plastic : float;
     mutable total_plastic : float;
   }
@@ -40,6 +43,9 @@ let init =
     positionning=0;
     height=0.;
     height_step=1.;
+    speed_G0=9000.;
+    speed_G1=1200.;
+    speed_extruder_rate=10000.;
     plastic=0.;
     total_plastic=0.
   }
