@@ -1,7 +1,7 @@
 CAML=ocamlc
 SRC=src/
 OBJ=obj/
-LIB=lib/
+SIG=SIG/
 INCLUDE=include/
 BIN=bin/
 EXEC=$(BIN)test
@@ -18,4 +18,4 @@ $(EXEC): $(SOURCE_CMO)
 	$(CAML) $? -o $@
 
 clean:
-	rm $(SRC)*.cmo $(SRC)*.cmi $(EXEC) 
+	rm -f $(SRC)*.cmo $(SRC)*.cmi $(EXEC) 

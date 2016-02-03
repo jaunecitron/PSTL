@@ -44,8 +44,10 @@ let lift_to env e =
 
 
 let program_init env =
-  G1_speed(env.speed_G1)::G0_speed(env.speed_G0)::M107::[]
-  
+  G0_height(env.height)::G1_speed(env.speed_G1)::G0_speed(env.speed_G0)::M107::[]
+
+let program_end env =
+  M107::G10(None)::G28("XY")::G0_height(env.height +. 1)::[]
 
 let program_to_string program =
   let rec to_string p res =

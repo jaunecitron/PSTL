@@ -55,6 +55,7 @@ let _ =
   done;
   prog := (print_to cur_env 30. 30.) ::  !prog;
   prog := (lift cur_env) :: !prog;
+  prog := List.append(program_end !prog);
   print_string (program_to_string !prog)
     
     
