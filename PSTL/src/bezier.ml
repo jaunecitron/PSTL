@@ -13,6 +13,7 @@ let coefficient_binomial k n =
 let polynome_bernstein i n t =
   (float_of_int (coefficient_binomial i n)) *. (t**(float_of_int i)) *. ((1.-.t)**(float_of_int (n-i)))
 
+
 									  
 let bezier t l =
   let n = (List.length l) - 1 in
