@@ -7,6 +7,8 @@ open Printf
 Primitives
  *)
 
+type t = instruction list
+
 let add_instruction instr program = instr :: program
        
 let move_to env x y =
@@ -52,10 +54,10 @@ let program_init env =
 let program_end env =
   M107::G10(None)::G28("XY")::G0_height(env.height +. 1.)::[]
 
-let program_to_string program =
-  let rec to_string p res =
+let print fmt program =
+  let rec to_string p =
     match p with
-      [] -> res
-     |h::t-> let instr = instruction_to_string h in
-	     to_string t (instr^res) in
-  to_string program ""
+    | [] -> ()
+    | h::t-> Printf.fprintf fmt "%s" (instruction_to_string h);
+      to_string t 
+  in to_string (List.rev program)

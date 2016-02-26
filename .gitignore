@@ -1,0 +1,4 @@
+*.cm[oia]
+*~
+bin/
+out/

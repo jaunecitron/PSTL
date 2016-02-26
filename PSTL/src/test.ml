@@ -56,5 +56,5 @@ let _ =
   prog := (print_to cur_env 30. 30.) ::  !prog;
   prog := (lift cur_env) :: !prog;
   prog := List.append (program_end cur_env) !prog;
-  print_string (program_to_string !prog)
-    
+  let file = open_out "out/out.gcode" in
+  print file !prog
