@@ -11,7 +11,7 @@ let _ =
   let p4 = {x=10.0;y=0.0} in
   let polygone = p4::p3::p2::p1::[] in
   let tmp = ref 0 in
-  let cur_env = env_init in
+  let cur_env = environment_init in
   let prog = ref (program_init cur_env) in
   prog := (move_to cur_env 20.0 20.0) :: !prog;
   while cur_env.pos.x<=30.0
@@ -34,7 +34,7 @@ let _ =
   prog := (move_to cur_env 20. 20.) :: !prog;
   while cur_env.height <= 10.3
   do
-    prog := List.append (print_polygone cur_env polygone) !prog;
+    prog := List.append (print_polygone_current_place cur_env polygone) !prog;
     prog := (lift cur_env) :: !prog
   done;
   tmp:=0;

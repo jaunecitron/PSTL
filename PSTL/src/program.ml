@@ -27,26 +27,19 @@ let print_to env x y =
   G1_print(x,y, env.plastic)      
     
 let move env x y =
-  env.printing <- false;
-  env.pos.x <- env.pos.x +. x;
-  env.pos.y <- env.pos.y +. y;
-  G0_move (env.pos.x,env.pos.y)
-
+  move_to env (env.pos.x+.x) (env.pos.y+.y)
+		 
 let print env x y =
-  let d = (distance {x=env.pos.x +. x;y=env.pos.y +. y} env.pos) *. (get_distance_plastic_rate env 1) in
-  env.printing <- true;
-  env.pos.x <- env.pos.x +. x;
-  env.pos.y <- env.pos.y +. y;
-  env.plastic <- env.plastic +. d;
-  env.total_plastic <- env.total_plastic +. d;
-  G1_print (env.pos.x,env.pos.y,env.plastic)
+  print_to env (env.pos.x+.x) (env.pos.y+.y)
 
-let lift env =
-  env.height <- env.height +. env.lift_step;
-  G0_height(env.height)
-	   
 let lift_to env e =
+  env.height <- e;
   G0_height(e)
+	   
+let lift env =
+  lift_to env (env.height+.env.lift_step)
+	   
+
 	   
 let program_init env =
   G0_height(env.height)::G1_speed(env.speed_G1)::G0_speed(env.speed_G0)::M106_fan_speed(env.fan_speed)::Comment("This is a comment")::[]

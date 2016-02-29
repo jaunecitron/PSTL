@@ -16,14 +16,14 @@ type environment=
     mutable total_plastic : float;
   }
     
-let env_init =
+let environment_init =
   {
     pos={x=0.;y=0.};
     positionning=0;
     height=0.3;
     lift_step=0.1;
-    speed_G0=9000.;
-    speed_G1=1200.;
+    speed_G0=4000.;
+    speed_G1=1000.;
     speed_extruder_rate=15000.;
     fan_speed=127;
     printing=false;
