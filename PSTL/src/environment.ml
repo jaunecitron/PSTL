@@ -11,6 +11,7 @@ type environment=
     mutable speed_G1 : float;
     mutable speed_extruder_rate : float;
     mutable fan_speed : int;
+    mutable extruder_radius : float;
     mutable printing : bool;
     mutable plastic : float;
     mutable total_plastic : float;
@@ -26,6 +27,7 @@ let environment_init =
     speed_G1=1000.;
     speed_extruder_rate=15000.;
     fan_speed=127;
+    extruder_radius=0.1;
     printing=false;
     plastic=0.;
     total_plastic=0.

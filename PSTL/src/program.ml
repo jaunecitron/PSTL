@@ -25,13 +25,22 @@ let print_to env x y =
   env.plastic <- env.plastic +. d;
   env.total_plastic <- env.total_plastic +. d;
   G1_print(x,y, env.plastic)      
-    
+
+let print_point env =
+  let d = env.extruder_radius *. (get_distance_plastic_rate env 1) in
+  env.plastic <- env.plastic +. d;
+  env.total_plastic <- env.total_plastic +. d;
+  G1_print(env.pos.x,env.pos.y, env.plastic)
+  
+	  
 let move env x y =
   move_to env (env.pos.x+.x) (env.pos.y+.y)
 		 
 let print env x y =
   print_to env (env.pos.x+.x) (env.pos.y+.y)
 
+
+	   
 let lift_to env e =
   env.height <- e;
   G0_height(e)
