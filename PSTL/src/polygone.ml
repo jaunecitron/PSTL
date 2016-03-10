@@ -24,7 +24,16 @@ let create_box polygone =
 	     aux t
   in
   aux polygone	
-  
+
+let polygone_regulier point radius nb_cotes =
+  let pi = 4. *. atan 1. in
+  let rec aux n res =
+    if n = 0 then res
+    else aux (n-1)
+	     ({x= point.x +. (radius *. cos((2.*.(float_of_int (n-1))*.pi/.(float_of_int nb_cotes))+.pi));
+	       y= point.y +. (radius *. sin((2.*.(float_of_int (n-1))*.pi/.(float_of_int nb_cotes))+.pi))}
+	      :: res) in
+  aux nb_cotes []
 	     
 let add p polygone = p::polygone
 			  
@@ -118,7 +127,7 @@ let print_polygone environment polygone =
 	   to_instructions t [move_to environment x y]
 
 let compare direction p1 p2 =
-  if direction == 0 then compare_ordonnee p1 p2 else compare_abscisse p1 p2
+  if direction == 0 then compare_abscisse p1 p2 else compare_ordonnee p1 p2
 			   
 (* direction correspond a la direction des droites remplissant le polygone
    direction vaut 0 si c'est horizontal, 1 si c'est vertical *)
@@ -130,18 +139,19 @@ let print_polygone_inner environment polygone direction shift_value =
     match pts with
       [] -> res
      |e1::e2::t -> aux t ((print_to environment e2.x e2.y)::(move_to environment e1.x e1.y)::res)
-     |h::t -> aux t ((print_to environment h.x h.y)::(move_to environment h.x h.y)::res) in
+     |h::t -> aux t ((print_point environment)::(move_to environment h.x h.y)::res) in
   let droite = ref {a=0.;b=0.;c=0.} in
   let taille_intervalle = if direction == 0 then (polygone_box.y_max-.polygone_box.y_min) else (polygone_box.x_max-.polygone_box.x_min) in
   let res = ref [] in
   let sens = ref 1 in
   let i = ref 0. in
   if direction == 0 then droite := {a=(-1.);b=0.;c=(-1.)*.polygone_box.y_min} else droite := {a=0.;b=1.;c=(-1.)*.polygone_box.x_min};
-  while !i < taille_intervalle
+  while (!i < taille_intervalle) || ((=.) !i taille_intervalle)
   do
-    intersections := List.sort
-		       (fun p1 p2-> !sens * (compare direction p1 p2))
+    intersections := List.sort_uniq
+		       (fun p1 p2 -> !sens * (compare direction p1 p2))
 		       (intersections_segments_droite segments !droite);
+    (*(if !sens < 0 then intersections := List.rev !intersections);*)
     res := List.append (aux !intersections []) !res;
     intersections := [];
     droite := {a=(!droite).a;b=(!droite).b;c=(!droite).c-.shift_value};
