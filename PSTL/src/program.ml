@@ -51,7 +51,7 @@ let lift env =
 
 	   
 let program_init env =
-  G0_height(env.height)::G1_speed(env.speed_G1)::G0_speed(env.speed_G0)::M106_fan_speed(env.fan_speed)::Comment("This is a comment")::[]
+  G92_init(0.)::G0_height(env.height)::G1_speed(env.speed_G1)::G0_speed(env.speed_G0)::M106_fan_speed(env.fan_speed)::Comment("This is a comment")::[]
 
 let program_end env =
   M107::G10(None)::G28("XY")::G0_height(env.height +. 1.)::[]

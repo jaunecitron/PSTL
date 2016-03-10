@@ -11,6 +11,8 @@ type instruction =
   | G10 of (int option) (* G10 retract *)
   | G11 of (int option) (* G11 retract/unretract*)
   | G28 of (string)  (* G28(x,y,z) move to origin *)
+  | G92 of (float * float * float * float) (* G92(x,y,z,e) allow programming of absolute zero point *)
+  | G92_init of (float) (* G92(e) *)
   | M106_fan_speed of (int) (* M106(s) turn fan 0 at speed s *)
   | M107
   | Comment of (string)
@@ -31,6 +33,8 @@ let instruction_to_string instr=
   | G28(s) -> let res = ref "G28" in
 	      for i = 0 to ((String.length s) - 1) do res := !res ^ (sprintf " %c" s.[i]) done;
 	      !res ^ "\n"
+  | G92(x,y,z,e) -> sprintf "G28 X%.4f Y%.4f Z%.4f E%.4f\n" x y z e
+  | G92_init(e) -> sprintf "G92 E%.4f\n" e
   | M106_fan_speed(s) -> sprintf "M106 S%d\n" s
   | M107 -> sprintf "M107\n"
   | Comment(s) -> sprintf ";%s\n" s

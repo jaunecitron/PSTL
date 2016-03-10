@@ -9,7 +9,7 @@ open Printf
 type polygone = point list
 type box = {x_min:float;x_max:float;y_min:float;y_max:float}
 	     
-let create_box polygone =
+let create_box_polygone polygone =
   let x_min = ref (-1.) in
   let x_max = ref (-1.) in
   let y_min = ref (-1.) in
@@ -23,8 +23,27 @@ let create_box polygone =
 	     (if (h.y > !y_max) || (!y_max = -1.) then y_max := h.y);
 	     aux t
   in
-  aux polygone	
+  aux polygone
 
+let create_box_forme forme =
+  let x_min = ref (-1.) in
+  let x_max = ref (-1.) in
+  let y_min = ref (-1.) in
+  let y_max = ref (-1.) in
+  let rec aux f =
+    match f with
+      [] -> {x_min= !x_min ; x_max= !x_max ; y_min = !y_min ; y_max = !y_max}
+     |h::t-> (if (h.p.x < !x_min) || (!x_min = -1.) then x_min := h.p.x);
+	     (if (h.p.x > !x_max) || (!x_max = -1.) then x_max := h.p.x);
+	     (if (h.p.y < !y_min) || (!y_min = -1.) then y_min := h.p.y);
+	     (if (h.p.y > !y_max) || (!y_max = -1.) then y_max := h.p.y);
+	     (if (h.q.x < !x_min) || (!x_min = -1.) then x_min := h.q.x);
+	     (if (h.q.x > !x_max) || (!x_max = -1.) then x_max := h.q.x);
+	     (if (h.q.y < !y_min) || (!y_min = -1.) then y_min := h.q.y);
+	     (if (h.q.y > !y_max) || (!y_max = -1.) then y_max := h.q.y);
+	     aux t in
+  aux forme
+      
 let polygone_regulier point radius nb_cotes =
   let pi = 4. *. atan 1. in
   let rec aux n res =
@@ -75,12 +94,12 @@ let barycentre polygone =
 
 let resize polygone w h =
   let point_barycentre = barycentre polygone in
-  let box = create_box polygone in 
+  let box = create_box_polygone polygone in 
   let width_pourcentage = w/.(box.x_max -. box.x_min) in
   let height_pourcentage = h/.(box.y_max -. box.y_min) in
   let rec aux p res =
     match p with
-      [] -> res
+      [] -> List.rev res
      |h::t-> aux t ({x=h.x -. (point_barycentre.x -. h.x) *. width_pourcentage;
 		   y=h.y -. (point_barycentre.y -. h.y) *. height_pourcentage} ::res) in
   aux polygone []
@@ -125,15 +144,15 @@ let print_polygone environment polygone =
 	      |h::t-> let instr = print_to environment h.x h.y in
 		      to_instructions t (instr::res) in
 	   to_instructions t [move_to environment x y]
-
-let compare direction p1 p2 =
-  if direction == 0 then compare_abscisse p1 p2 else compare_ordonnee p1 p2
 			   
 (* direction correspond a la direction des droites remplissant le polygone
    direction vaut 0 si c'est horizontal, 1 si c'est vertical *)
-let print_polygone_inner environment polygone direction shift_value =
-  let segments = polygone_to_segments polygone in
-  let polygone_box = create_box polygone in
+let compare direction p1 p2 =
+  if direction == 0 then compare_abscisse p1 p2 else compare_ordonnee p1 p2
+
+let print_forme_inner environment forme direction shift_value =
+  let segments = forme in
+  let polygone_box = create_box_forme forme in
   let intersections = ref [] in
   let rec aux pts res =
     match pts with
@@ -151,14 +170,13 @@ let print_polygone_inner environment polygone direction shift_value =
     intersections := List.sort_uniq
 		       (fun p1 p2 -> !sens * (compare direction p1 p2))
 		       (intersections_segments_droite segments !droite);
-    (*(if !sens < 0 then intersections := List.rev !intersections);*)
     res := List.append (aux !intersections []) !res;
     intersections := [];
     droite := {a=(!droite).a;b=(!droite).b;c=(!droite).c-.shift_value};
     sens := !sens * -1;
     i := !i +. shift_value
   done;
-  !res 
-  
-  
-  
+  !res
+			   
+let print_polygone_inner environment polygone direction shift_value =
+  print_forme_inner environment (polygone_to_segments polygone) direction shift_value
