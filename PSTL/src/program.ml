@@ -48,7 +48,24 @@ let lift_to env e =
 let lift env =
   lift_to env (env.height+.env.lift_step)
 	   
+let inline_retract program = program
+  (* let rec aux p res= *)
+  (*   match p with *)
+  (*   [] -> res *)
+  (*   |(G1_print _ as g1)::(G0_move _ as g0)::t *)
+  (*   |(G1 _ as g1)::(G0  _ as g0)::t *)
+  (*   |(G1_print _ as g1)::(G0  _ as g0)::t *)
+  (*   |(G1 _ as g1)::(G0_move  _ as g0)::t *)
+  (*     -> aux (g0::t) (G10(None) :: g1 ::res)  *)
+    
+  (*   |(G0 _ as g0)::(G1  _ as g1)::t *)
+  (*   |(G0 _ as g0)::(G1_print  _ as g1)::t *)
+  (*   |(G0_move _ as g0)::(G1  _ as g1)::t *)
+  (*   |(G0_move _ as g0)::(G1_print _ as g1) ::t -> *)
+  (*     aux (g1::t) (G11(None) :: g0 :: res) *)
 
+  (*   |h::t-> aux t (h::res) in *)
+  (* aux program [] |> List.rev  *)
 	   
 let program_init env =
   G92_init(0.)::G0_height(env.height)::G1_speed(env.speed_G1)::G0_speed(env.speed_G0)::M106_fan_speed(env.fan_speed)::Comment("This is a comment")::[]
@@ -57,9 +74,8 @@ let program_end env =
   M107::G10(None)::G28("XY")::G0_height(env.height +. 1.)::[]
 
 let print fmt program =
-  let rec to_string p =
-    match p with
+  let rec to_string = function
     | [] -> ()
     | h::t-> Printf.fprintf fmt "%s" (instruction_to_string h);
       to_string t 
-  in to_string (List.rev program)
+  in to_string (inline_retract (List.rev program))

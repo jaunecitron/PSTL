@@ -1,0 +1,29 @@
+Fonction générale qui prend une liste de segment dans un plan et
+génère la liste d'instruction correspondante
+
+################################################################
+
+Correctifs :
+
+- En-tete des fichiers gcode PROPRE (temps + quantité de matière
+  	      	       	     	     + chaque ligne le layer)!
+- Utilisation d'ocamlbuild
+- PSTL/PSTL/* => PSTL/*
+- Ajout PSTL/rapport
+- GO-G1 => G0-G11-G1 && G1-G0 => G1-G10-G0 (dans polygone)
+
+
+################################################################
+
+Début de rapport (en latex!!) :
+
+- Intro + Plan
+
+Un exemple de rapport en latex : http://www-igm.univ-mlv.fr/~dr/XPOSE2004/latex/exple_cplt.html
+
+
+################################################################
+
+Semaine d'après :
+
+DE LA VRAIE 3D!!
