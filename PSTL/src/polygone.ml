@@ -154,11 +154,32 @@ let print_forme_inner environment forme direction shift_value =
   let segments = forme in
   let polygone_box = create_box_forme forme in
   let intersections = ref [] in
+  let unretract = ref false in
   let rec aux pts res =
     match pts with
-      [] -> res
-     |e1::e2::t -> aux t ((print_to environment e2.x e2.y)::(move_to environment e1.x e1.y)::res)
-     |h::t -> aux t ((print_point environment)::(move_to environment h.x h.y)::res) in
+      [] -> unretract := false; res
+     |e1::e2::e3::t ->
+       if !unretract then
+	 begin
+	   unretract := true;
+	   aux (e3::t) (G10(None)::(print_to environment e2.x e2.y)::G11(None)::(move_to environment e1.x e1.y)::res)
+	 end
+       else
+	 begin
+	   unretract := true;
+	   aux (e3::t) (G10(None)::(print_to environment e2.x e2.y)::(move_to environment e1.x e1.y)::res)
+	 end
+     |e1::e2::t ->
+       if !unretract then
+	 aux t ((print_to environment e2.x e2.y)::G11(None)::(move_to environment e1.x e1.y)::res)
+       else
+	 aux t ((print_to environment e2.x e2.y)::(move_to environment e1.x e1.y)::res)
+     |h::t ->
+       if !unretract then
+	 aux t ((print_point environment)::G11(None)::(move_to environment h.x h.y)::res)
+       else
+	 aux t ((print_point environment)::(move_to environment h.x h.y)::res)
+  in
   let droite = ref {a=0.;b=0.;c=0.} in
   let taille_intervalle = if direction == 0 then (polygone_box.y_max-.polygone_box.y_min) else (polygone_box.x_max-.polygone_box.x_min) in
   let res = ref [] in

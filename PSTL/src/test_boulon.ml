@@ -5,7 +5,8 @@ open Program
 open Polygone
 
 let _ =
-  let file = open_out "out/boulon.gcode" in
+  let file_name = "out/boulon_test_entete.gcode" in
+  let file = open_out file_name in
   let env = environment_init in
   let hauteur = 10.3 in
   let centre = {x=50.;y=50.} in
@@ -17,26 +18,28 @@ let _ =
   let forme_interieur = List.append (polygone_to_segments (resize petit_hexagone (-2.*.env.extruder_radius) (-2.*.env.extruder_radius)))
 				 (polygone_to_segments (resize grand_cercle (2.*.env.extruder_radius) (2.*.env.extruder_radius))) in
   let direction = ref 0 in
-  print file (program_init env);
+  let res = ref [] in
   while (env.height < hauteur) || ((=.) env.height hauteur)
   do
     (if ((=.) env.height 0.3) || ((=.) env.height 0.4) || ((=.) env.height hauteur) || ((=.) env.height (hauteur-.0.1)) then
        begin
-	 (if ((=.) env.height (hauteur-.0.1)) then print file (M106_fan_speed(255)::[]));
-	 print file (print_polygone env hexagone);
-	 print file (print_polygone env petit_hexagone);
-	 print file (print_polygone env grand_cercle);
-	 print file (print_polygone env cercle);
-	 print file (print_forme_inner env forme_interieur !direction (1.5*.env.extruder_radius))
+	 (if ((=.) env.height (hauteur-.0.1)) then res := (M106_fan_speed(255)::!res));
+	 res := List.append (print_polygone env hexagone) !res;
+	 res := List.append (print_polygone env petit_hexagone) !res;
+	 res := List.append (print_polygone env grand_cercle) !res;
+	 res := List.append (print_polygone env cercle) !res;
+	 res := List.append (print_forme_inner env forme_interieur !direction (1.5*.env.extruder_radius)) !res
        end
      else
        begin
-	 let _ = print file (print_polygone env hexagone) in
-	 let _ = print file (print_polygone env cercle) in
-	 print file (print_forme_inner env petite_forme !direction 6.)
+	 res := List.append (print_polygone env hexagone) !res;
+	 res := List.append (print_polygone env cercle) !res;
+	 res := List.append (print_forme_inner env petite_forme !direction 6.) !res
        end
     );
-    print file ((lift env)::[]);
+    res := lift env::(comment_layer env)::!res;
     direction := (!direction +1) mod 2
   done;
+  print file (program_init env);
+  print file !res;
   print file (program_end env)

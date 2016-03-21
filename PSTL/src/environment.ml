@@ -6,7 +6,10 @@ type environment=
     mutable pos : point;
     mutable positionning : int; (* 0 to absolute; 1 to relative *)
     mutable height : float;
+    mutable height_init : float;
+    mutable layer : int;
     mutable lift_step : float;
+    mutable time : float;
     mutable speed_G0 : float;
     mutable speed_G1 : float;
     mutable speed_extruder_rate : float;
@@ -22,7 +25,10 @@ let environment_init =
     pos={x=0.;y=0.};
     positionning=0;
     height=0.3;
+    height_init=0.3;
+    layer=1;
     lift_step=0.1;
+    time=0.;
     speed_G0=4000.;
     speed_G1=1000.;
     speed_extruder_rate=15000.;
