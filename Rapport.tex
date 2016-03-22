@@ -1,0 +1,37 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[francais]{babel}
+
+\title{Bibliothèque logicielle pour impression 3D d’objets contraints}
+\author{REN Marc}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\begin{abstract}
+\end{abstract}
+
+\section{Introduction}
+L'impression 3D est un procédé existant depuis le milieu des années 80 qui connait un certain engouement grâce a la commercialisation d'imprimantes 3D destinées au grand public.
+Il existe plusieurs technologies permettant la conception d'un objet,
+le SLS ou Selective Laser Sintering, frittage sélectif par laser en français
+le SLA ou StereoLithograph Apparatus, l'impression par stéréolithographie (solidification d'une couche de plastique liquide par émission de lumière UV)
+le FDM ou Fuse Deposition Modeling, modelage par dépôt de matière en fusion
+C'est cette dernière qui est utilisée par les imprimantes. Dans le cadre de notre projet la matière sera du plastique.
+
+Ces imprimantes 3D exécutent des programmes écrits en G-Code. 
+Le G-Code est un langage impératif se limitant à de simples instructions de paramétrages et d'utilisation des différents outils présents sur la machine. 
+La modélisation 3D, destinée à l’impression, est soumise à certaines restrictions tant physiques que matérielles. À l’heure actuelle, plusieurs logiciels de modélisation 3D existent. Ces derniers, bien que très aboutis, ne permettent pas la conceptions d’objets récursifs ou satisfaisant des contraintes mathématiques.
+
+Le but du projet sera de fournir une bibliothèque offrant les mêmes services que les logiciels de modélisation 3D tout en offrant la possibilité de définir des objets itérativement ou récursivement.
+\newpage
+
+\section{Représentation d'un programme G-Code en Ocaml}
+\section{Formes en 2D}
+\section{Formes en 2.5D}
+\section{Formes en 3D}
+\end{document}
