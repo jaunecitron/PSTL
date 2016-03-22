@@ -32,10 +32,3 @@ $(SRC)%.cmo: $(SRC)%.ml
 #CLEAN
 clean:
 	rm -f $(SRC)*.cmo $(SRC)*.cmi $(SRC)#* $(SRC)*~ $(EXEC)
-
-
-#DEPENDENCIES
-depend:
-	$(OCAMLDEP) -I $(SRC) -native $(SRC)*.ml > .depend
-
-include .depend
