@@ -32,3 +32,32 @@ Pour la semaine du 29: DE LA VRAIE 3D (2,5 quand même)!!
   
   
   
+##################################################################################################
+
+Rapport
+
+Plan :
+
+Partie 2 : Etat de l'art
+
+Logiciels modélisation 3D - blender, etc.
+
+Divers formats 3D => Compilation vers du G-CODE
+
+Description rapide du GCODE (sans énumerer toutes les instructions...)
+
+Contraintes courantes/concretes de l'impression 3D
+
+Partie 3 : Motivations & approche
+
+2D, programmation
+OCaml
+
+Partie 4 : Réalisation (ce que tu as fait/codé)
+
+Aspect technique
+
+Partie 5 : Expérimentations
+
+Partie 6 : Conclusion
+
