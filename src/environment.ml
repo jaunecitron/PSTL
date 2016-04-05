@@ -9,6 +9,7 @@ type environment=
     mutable height_init : float;
     mutable layer : int;
     mutable lift_step : float;
+    mutable gaufrage : float;
     mutable time : float;
     mutable speed_G0 : float;
     mutable speed_G1 : float;
@@ -28,6 +29,7 @@ let environment_init =
     height_init=0.3;
     layer=1;
     lift_step=0.1;
+    gaufrage=5.;
     time=0.;
     speed_G0=4000.;
     speed_G1=1000.;

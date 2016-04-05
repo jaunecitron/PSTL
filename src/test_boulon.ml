@@ -3,6 +3,7 @@ open Point
 open Environment
 open Program
 open Polygone
+open Forme
 
 let _ =
   let file_name = "out/boulon_test_entete.gcode" in
@@ -12,11 +13,11 @@ let _ =
   let centre = {x=50.;y=50.} in
   let cercle = polygone_regulier centre 10. 20 in
   let hexagone = polygone_regulier centre 20. 6 in
-  let petit_hexagone = resize hexagone (-2.*.env.extruder_radius) (-2.*.env.extruder_radius) in
-  let grand_cercle = resize cercle (2.*.env.extruder_radius) (2.*.env.extruder_radius) in
+  let petit_hexagone = resize_polygone hexagone (-2.*.env.extruder_radius) (-2.*.env.extruder_radius) in
+  let grand_cercle = resize_polygone cercle (2.*.env.extruder_radius) (2.*.env.extruder_radius) in
   let petite_forme = List.append (polygone_to_segments petit_hexagone) (polygone_to_segments grand_cercle) in
-  let forme_interieur = List.append (polygone_to_segments (resize petit_hexagone (-2.*.env.extruder_radius) (-2.*.env.extruder_radius)))
-				 (polygone_to_segments (resize grand_cercle (2.*.env.extruder_radius) (2.*.env.extruder_radius))) in
+  let forme_interieur = List.append (polygone_to_segments (resize_polygone petit_hexagone (-2.*.env.extruder_radius) (-2.*.env.extruder_radius)))
+				    (polygone_to_segments (resize_polygone grand_cercle (2.*.env.extruder_radius) (2.*.env.extruder_radius))) in
   let direction = ref 0 in
   let res = ref [] in
   while (env.height < hauteur) || ((=.) env.height hauteur)

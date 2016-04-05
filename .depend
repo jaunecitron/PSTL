@@ -1,0 +1,38 @@
+src/bezier.cmo : src/program.cmo src/point.cmo
+src/bezier.cmx : src/program.cmx src/point.cmx
+src/box.cmo :
+src/box.cmx :
+src/droite.cmo : src/point.cmo
+src/droite.cmx : src/point.cmx
+src/environment.cmo : src/point.cmo
+src/environment.cmx : src/point.cmx
+src/forme.cmo : src/segment.cmo src/program.cmo src/point.cmo \
+    src/instruction.cmo src/environment.cmo src/droite.cmo src/box.cmo
+src/forme.cmx : src/segment.cmx src/program.cmx src/point.cmx \
+    src/instruction.cmx src/environment.cmx src/droite.cmx src/box.cmx
+src/instruction.cmo :
+src/instruction.cmx :
+src/point.cmo :
+src/point.cmx :
+src/polygone.cmo : src/segment.cmo src/program.cmo src/point.cmo \
+    src/instruction.cmo src/forme.cmo src/environment.cmo src/droite.cmo \
+    src/box.cmo
+src/polygone.cmx : src/segment.cmx src/program.cmx src/point.cmx \
+    src/instruction.cmx src/forme.cmx src/environment.cmx src/droite.cmx \
+    src/box.cmx
+src/program.cmo : src/point.cmo src/instruction.cmo src/environment.cmo
+src/program.cmx : src/point.cmx src/instruction.cmx src/environment.cmx
+src/segment.cmo : src/point.cmo src/droite.cmo
+src/segment.cmx : src/point.cmx src/droite.cmx
+src/test.cmo : src/program.cmo src/polygone.cmo src/point.cmo \
+    src/environment.cmo
+src/test.cmx : src/program.cmx src/polygone.cmx src/point.cmx \
+    src/environment.cmx
+src/test_boulon.cmo : src/program.cmo src/polygone.cmo src/point.cmo \
+    src/instruction.cmo src/forme.cmo src/environment.cmo
+src/test_boulon.cmx : src/program.cmx src/polygone.cmx src/point.cmx \
+    src/instruction.cmx src/forme.cmx src/environment.cmx
+src/test_pyramide.cmo : src/program.cmo src/polygone.cmo src/point.cmo \
+    src/instruction.cmo src/environment.cmo
+src/test_pyramide.cmx : src/program.cmx src/polygone.cmx src/point.cmx \
+    src/instruction.cmx src/environment.cmx

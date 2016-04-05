@@ -17,12 +17,12 @@ let _ =
   while (env.height < hauteur) || ((=.) env.height hauteur)
   do
     res := List.append (print_polygone env !pyramide) !res;
-    petite_pyramide := (resize !pyramide (2.*.pente) (2.*.pente));
+    petite_pyramide := (resize_polygone !pyramide (2.*.pente) (2.*.pente));
     (if ((=.) env.height 0.3) || ((=.) env.height 0.4) || ((=.) env.height hauteur) || ((=.) env.height (hauteur-.0.1)) then
        begin
 	 (if ((=.) env.height (hauteur-.0.1)) then print file (M106_fan_speed(255)::[]));
 	 res := List.append (print_polygone env !petite_pyramide) !res;
-        res := List.append (print_polygone_inner env (resize !petite_pyramide (-4.*.env.extruder_radius) (-4.*.env.extruder_radius)) !direction (1.5*.env.extruder_radius)) !res;
+        res := List.append (print_polygone_inner env (resize_polygone !petite_pyramide (-4.*.env.extruder_radius) (-4.*.env.extruder_radius)) !direction (1.5*.env.extruder_radius)) !res;
       end
     else
       res := List.append (print_polygone_inner env !petite_pyramide !direction 6.) !res

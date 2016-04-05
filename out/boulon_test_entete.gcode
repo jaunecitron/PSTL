@@ -1,10 +1,10 @@
 ;This is a comment
+;TIME: 47
+;Layer count: 102
 M106 S127
 G0 F4000.000000
 G1 F1000.000000
 G92 E0.0000
-;TIME: 47
-;Layer count: 102
 ;LAYER: 0
 G0 Z0.3000
 G0 X30.0000 Y50.0000

@@ -56,7 +56,7 @@ let comment_layer env=
   Comment(sprintf "LAYER: %d" env.layer)
 	 
 let program_init env =
-  G0_height(env.height_init)::Comment("LAYER: 0")::Comment(sprintf "Layer count: %d" env.layer)::Comment(sprintf "TIME: %.0f" env.time)::G92_init(0.)::G1_speed(env.speed_G1)::G0_speed(env.speed_G0)::M106_fan_speed(env.fan_speed)::Comment("This is a comment")::[]
+  G0_height(env.height_init)::Comment("LAYER: 0")::G92_init(0.)::G1_speed(env.speed_G1)::G0_speed(env.speed_G0)::M106_fan_speed(env.fan_speed)::Comment(sprintf "Layer count: %d" env.layer)::Comment(sprintf "TIME: %.0f" env.time)::Comment("This is a comment")::[]
 
 let program_end env =
   M107::G10(None)::G28("XY")::G0_height(env.height +. 1.)::[]
