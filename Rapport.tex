@@ -16,22 +16,39 @@
 \end{abstract}
 
 \section{Introduction}
-L'impression 3D est un procédé existant depuis le milieu des années 80 qui connait un certain engouement grâce a la commercialisation d'imprimantes 3D destinées au grand public.
+L'impression 3D est un procédé existant depuis le milieu des années 80 qui connait un certain engouement grâce à la commercialisation d'imprimantes 3D destinées au grand public.
 Il existe plusieurs technologies permettant la conception d'un objet,
 le SLS ou Selective Laser Sintering, frittage sélectif par laser en français
 le SLA ou StereoLithograph Apparatus, l'impression par stéréolithographie (solidification d'une couche de plastique liquide par émission de lumière UV)
 le FDM ou Fuse Deposition Modeling, modelage par dépôt de matière en fusion
-C'est cette dernière qui est utilisée par les imprimantes. Dans le cadre de notre projet la matière sera du plastique.
+C'est cette dernière qui est la plus utilisée par les imprimantes et dans le  cadre de notre projet, c'est cette technologie qui est employée, la matière en fusion étant du plastique.
 
-Ces imprimantes 3D exécutent des programmes écrits en G-Code. 
+Ces imprimantes 3D exécutent des programmes écrits en g-code. 
 Le G-Code est un langage impératif se limitant à de simples instructions de paramétrages et d'utilisation des différents outils présents sur la machine. 
-La modélisation 3D, destinée à l’impression, est soumise à certaines restrictions tant physiques que matérielles. À l’heure actuelle, plusieurs logiciels de modélisation 3D existent. Ces derniers, bien que très aboutis, ne permettent pas la conceptions d’objets récursifs ou satisfaisant des contraintes mathématiques.
+La modélisation 3D, destinée à l’impression, est soumise à certaines restrictions tant physiques que matérielles. À l’heure actuelle, plusieurs logiciels de modélisation 3D existent. Ces derniers, bien que très aboutis, ne permettent pas la conceptions d’objets récursifs.
 
-Le but du projet sera de fournir une bibliothèque offrant les mêmes services que les logiciels de modélisation 3D tout en offrant la possibilité de définir des objets itérativement ou récursivement.
+Nous montrerons comment se déroule le schéma classique d'une impression 3D et ce qui nous a poussé a développer notre bibliothèque logicielle pour impression 3D. 
 \newpage
 
-\section{Représentation d'un programme G-Code en Ocaml}
-\section{Formes en 2D}
-\section{Formes en 2.5D}
-\section{Formes en 3D}
+\section{Etat de l'art}
+La manière la plus courante pour imprimer l'objet 3D désiré est d'abord de le modéliser pour ensuite en générer un fichier au format g-code.
+
+Il existe plusieurs logiciels de modélisation 3D tels que blender ou bien Tinkercad, tous reposant sur le même principe. Pour tous, il faut assembler dans un espace donné différentes formes volumineuses jusqu'à obtenir le rendu désiré. Le modèle obtenu peut ensuite être exporté sous différents formats. Le format le plus couramment utilisé est le stl, un aconyme pour Standard Triangle Language. Un fichier stl décrit un objet par un ensemble de triangles, chaque triangle étant lui même décrit par trois vecteurs. Plus l'objet est complexe et plus le nombre de triangles le définissant est important.
+
+Une fois l'objet modélisé et enregistré au format stl, il est converti au format g-code.
+Plusieurs logiciels permettent cette conversion, les logiciels les plus populaires sont Slic3r et Cura et reposent tous sur le même principe.
+L'imprimante étant limitée par des contraintes physiques, la matière sortant de la tête d'impression étant solide et étant soumise à la gravité, il est impossible d'imprimer de la matière sous ce qui a déjà été sortie.
+Pour obtenir le fichier g-code correspondant à l'objet modélisé, le logiciel parcourt alors l'objet de bas en haut et le découpe en plusieurs couches horizontales dont il génère le g-code.
+
+\newpage
+\section{Motivations et Approche}
+Les logiciels de modélisation 3D, bien que très aboutis, ne permettent pas la conceptions d’objets récursifs. 
+
+Il a été décidé que cette bibliothèque produise des fichiers en g-code, cela nous permet d'avoir un meilleur contrôle sur le rendu. Certaines caractéristiques sont propres à chaque machines mais aussi au matériel utilisé, des paramètres que ne prennent pas en compte les logiciels convertissant les fichiers stl en fichier g-code.
+\newpage
+\section{Réalisation}
+\newpage
+\section{Expérimentations}
+\newpage
+\section{Conclusion}
 \end{document}

@@ -3,9 +3,7 @@ open Instruction
 open Point
 open Printf
 
-(*
-Primitives
- *)
+(*Primitives*)
 
 type t = instruction list
 
