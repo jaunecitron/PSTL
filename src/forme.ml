@@ -33,7 +33,7 @@ let barycentre_forme forme =
   let y_sum = ref 0. in
   let rec aux p n=
     match p with
-      [] -> {x= !x_sum /. (float_of_int n); y= !y_sum /. (float_of_int n)}
+      [] -> {x= !x_sum /. (float_of_int (2*n)); y= !y_sum /. (float_of_int (2*n))}
      |h::t-> x_sum:= !x_sum +. h.p.x +. h.q.x;
 	     y_sum:= !y_sum +. h.p.y +. h.q.y;
 	     aux t (n+1) in
@@ -214,3 +214,13 @@ let print_forme_iterative environment func forme couches =
       end
   in
   to_instructions forme couches []		  
+
+let print_forme_recursive_clean environment func forme couches =
+  let rec to_instructions f couche res=
+    if (couche == 0)
+    then
+      res
+    else
+      to_instructions (func f) (couche - 1) (List.append (print_forme environment f) ((lift environment)::res))
+  in
+  to_instructions forme couches []
