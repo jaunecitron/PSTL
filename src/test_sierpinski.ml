@@ -61,6 +61,26 @@ let transformation environment sierpinski pente =
   in
   aux sierpinski []
 
+let transformation_recreate environment sierpinski pente =
+  let rec aux forme res =
+    match forme with
+    | [] -> res
+    | a::b::c::t ->
+       let barycentre = barycentre_forme (a::b::c::[]) in
+       let rayon = distance barycentre a.p in
+       if ( (rayon > environment.extruder_radius) || ((=.) rayon environment.extruder_radius) ) then
+	 let triangle = polygone_regulier barycentre (rayon-.pente/.2.) 3 in
+	 let point = List.hd triangle in
+	 if ((distance point a.p) < (pente/.2.)) || ((distance point b.p) < (pente/.2.)) || ((distance point c.p) < (pente/.2.)) || ((=.) (distance point a.p) (pente/.2.)) || ((=.) (distance point b.p) (pente/.2.)) || ((=.) (distance point c.p) (pente/.2.)) then
+	   aux t (List.append (polygone_to_segments triangle) res)
+	 else
+	   aux t (List.append (polygone_to_segments (polygone_regulier_angle barycentre (rayon-.pente/.2.) 3 0.)) res)
+       else
+	 aux t res
+    | _ -> raise SomethingWrong
+  in
+  aux sierpinski []
+
 let nb_couches sierpinski pente=
   match sierpinski with
   | [] -> 0
@@ -73,12 +93,10 @@ let _ =
   let triangle = polygone_regulier centre 20. 3 in
   let forme = sierpinski env triangle 3. in
   let pente = env.extruder_radius in
-  let couches = nb_couches (polygone_to_segments triangle) pente in
-  let prog = print_forme_recursive_clean env (fun f -> transformation env f pente) forme couches in
+  let couches = (nb_couches (polygone_to_segments triangle) pente) + 30  in
+  let prog = print_forme_recursive_clean env (fun f -> transformation_recreate env f pente) forme couches in
   print_endline (Printf.sprintf "Il va y avoir %d couches" couches);
   print file (program_init env);
   print file prog;
   print file (program_end env)
 
-	(*Objectif
-print_forme_recursive env (fun f -> transformation env f pente) forme couches*)

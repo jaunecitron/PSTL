@@ -6,7 +6,7 @@ open Polygone
 open Forme
 
 let _ =
-  let file_name = "out/boulon_test_entete.gcode" in
+  let file_name = "out/boulon.gcode" in
   let file = open_out file_name in
   let env = environment_init in
   let hauteur = 10.3 in

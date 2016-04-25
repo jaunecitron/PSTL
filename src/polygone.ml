@@ -25,16 +25,20 @@ let create_box_polygone polygone =
 	     aux t
   in
   aux polygone
+
+let pi = 4. *. atan 1.
       
-let polygone_regulier point radius nb_cotes =
-  let pi = 4. *. atan 1. in
+let polygone_regulier_angle point radius nb_cotes angle =
   let rec aux n res =
     if n = 0 then res
     else aux (n-1)
-	     ({x= point.x +. (radius *. cos((2.*.(float_of_int (n-1))*.pi/.(float_of_int nb_cotes))+.pi));
-	       y= point.y +. (radius *. sin((2.*.(float_of_int (n-1))*.pi/.(float_of_int nb_cotes))+.pi))}
+	     ({x= point.x +. (radius *. cos((2.*.(float_of_int (n-1))*.pi/.(float_of_int nb_cotes))+.angle));
+	       y= point.y +. (radius *. sin((2.*.(float_of_int (n-1))*.pi/.(float_of_int nb_cotes))+.angle))}
 	      :: res) in
   aux nb_cotes []
+      
+let polygone_regulier point radius nb_cotes =
+  polygone_regulier_angle point radius nb_cotes pi
 	     
 let add p polygone = p::polygone
 			  
@@ -130,6 +134,3 @@ let print_polygone environment polygone =
 			   
 let print_polygone_inner environment polygone direction shift_value =
   print_forme_inner environment (polygone_to_segments polygone) direction shift_value
-
-let print_polygone_monotone environment polygone couches =
-  print_forme_monotone environment (polygone_to_segments polygone) couches

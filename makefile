@@ -6,21 +6,22 @@ OBJ=obj/
 SIG=SIG/
 INCLUDE=include/
 BIN=bin/
-EXEC=$(BIN)test-carre $(BIN)test-pyramide $(BIN)test-boulon $(BIN)test-cylindre $(BIN)test-bezier $(BIN)test-sierpinski
+EXEC=$(BIN)test-cube $(BIN)test-pyramide $(BIN)test-boulon $(BIN)test-cylindre $(BIN)test-cone $(BIN)test-bezier $(BIN)test-sierpinski
 
 SOURCE_CMO_POLYGONE= $(SRC)point.cmo $(SRC)instruction.cmo $(SRC)environment.cmo $(SRC)program.cmo $(SRC)droite.cmo $(SRC)segment.cmo $(SRC)box.cmo $(SRC)forme.cmo $(SRC)polygone.cmo 
-SOURCE_CMO_CARRE= $(SOURCE_CMO_POLYGONE) $(SRC)test_cube.cmo
+SOURCE_CMO_CUBE= $(SOURCE_CMO_POLYGONE) $(SRC)test_cube.cmo
 SOURCE_CMO_PYRAMIDE= $(SOURCE_CMO_POLYGONE) $(SRC)test_pyramide.cmo
 SOURCE_CMO_BOULON= $(SOURCE_CMO_POLYGONE) $(SRC)test_boulon.cmo
-SOURCE_CMO_CYLINDRE=$(SOURCE_CMO_POLYGONE) $(SRC)test_cylindre.cmo
-SOURCE_CMO_SIERPINSKI=$(SOURCE_CMO_POLYGONE) $(SRC)test_sierpinski.cmo
-SOURCE_CMO_BEZIER=$(SRC)point.cmo $(SRC)instruction.cmo $(SRC)environment.cmo $(SRC)program.cmo $(SRC)bezier.cmo
+SOURCE_CMO_CYLINDRE= $(SOURCE_CMO_POLYGONE) $(SRC)test_cylindre.cmo
+SOURCE_CMO_CONE= $(SOURCE_CMO_POLYGONE) $(SRC)test_cone.cmo
+SOURCE_CMO_SIERPINSKI= $(SOURCE_CMO_POLYGONE) $(SRC)test_sierpinski.cmo
+SOURCE_CMO_BEZIER= $(SRC)point.cmo $(SRC)instruction.cmo $(SRC)environment.cmo $(SRC)program.cmo $(SRC)bezier.cmo
 
 
 
 all: $(EXEC)
 
-$(BIN)test-carre: $(SOURCE_CMO_CARRE)
+$(BIN)test-cube: $(SOURCE_CMO_CUBE)
 	$(CAML) -I $(SRC) $? -o $@
 
 $(BIN)test-pyramide: $(SOURCE_CMO_PYRAMIDE)
@@ -30,6 +31,9 @@ $(BIN)test-boulon: $(SOURCE_CMO_BOULON)
 	$(CAML) -I $(SRC) $? -o $@
 
 $(BIN)test-cylindre: $(SOURCE_CMO_CYLINDRE)
+	$(CAML) -I $(SRC) $? -o $@
+
+$(BIN)test-cone: $(SOURCE_CMO_CONE)
 	$(CAML) -I $(SRC) $? -o $@
 
 $(BIN)test-sierpinski: $(SOURCE_CMO_SIERPINSKI)

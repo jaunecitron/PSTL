@@ -69,7 +69,7 @@ let print_forme environment forme =
 	 if ((=.) h.q.x environment.pos.x) && ((=.) h.q.y environment.pos.y) then
 	   to_instructions t ((print_to environment h.p.x h.p.y)::res)
 	 else
-	   to_instructions t ((print_to environment h.q.x h.q.y)::(move_to environment h.p.x h.p.y)::res)
+	   to_instructions t ((print_to environment h.q.x h.q.y)::G11(None)::(move_to environment h.p.x h.p.y)::G10(None)::res)
   in
   to_instructions reverse_forme []
       
@@ -173,13 +173,13 @@ let print_forme_recursive environment func forme couches =
 	       let simple_forme = List.append (print_forme environment f) res in
 	       let double_forme = List.append (print_forme environment petite_forme) simple_forme in
 	       let base_remplie = List.append (print_forme_inner environment a_remplir !direction (2.*.environment.extruder_radius)) double_forme in
-	       to_instructions (func f) (couche-1) ((lift environment)::(comment_layer environment)::base_remplie)
+	       to_instructions (func f) (couche-1) ((lift environment)::base_remplie)
 	     end
 	    else
 	      begin
 		let simple_forme = List.append (print_forme environment f) res in
 	        let gaufrage = List.append (print_forme_inner environment petite_forme !direction environment.gaufrage) simple_forme in
-		to_instructions (func f) (couche-1) ((lift environment)::(comment_layer environment)::gaufrage)
+		to_instructions (func f) (couche-1) ((lift environment)::gaufrage)
 	      end
       end
   in
@@ -221,6 +221,6 @@ let print_forme_recursive_clean environment func forme couches =
     then
       res
     else
-      to_instructions (func f) (couche - 1) (List.append (print_forme environment f) ((lift environment)::res))
+      to_instructions (func f) (couche - 1) ((lift environment)::(List.append (print_forme environment f)) res)
   in
   to_instructions forme couches []
