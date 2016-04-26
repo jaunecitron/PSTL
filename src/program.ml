@@ -61,8 +61,9 @@ let program_init env =
    G0_speed(env.speed_G0);
    M106_fan_speed(env.fan_speed);
    Comment(sprintf "Layer count: %d" env.layer);
-   Comment(sprintf "MATERIAL: %f" env.total_plastic);
-   Comment(sprintf "TIME: %.0f" (env.time*.60.))
+   Comment(sprintf "MATERIAL: %f\n" env.total_plastic);
+   Comment(sprintf "TIME: %.0f" (env.time*.60.));
+   Comment("FLAVOR:UltiGCode")
   ]
 
 let program_end env =
