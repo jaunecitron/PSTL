@@ -1,5 +1,7 @@
 _build
 _build/*
+bin
+bin/*
 *.cm[oia]
 *~
 *#
