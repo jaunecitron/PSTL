@@ -1,5 +1,7 @@
-;This is a comment
-;TIME: 14
+;FLAVOR:UltiGCode
+;TIME: 813
+;MATERIAL: 1280.263569
+
 ;Layer count: 146
 M106 S127
 G0 F4000.000000
