@@ -5,8 +5,8 @@
 \usepackage{lmodern}
 \usepackage[english]{babel}
 \usepackage{verbatim}
-\usepackage{listings}
 \usepackage{graphicx}
+\usepackage{listings}
 
 \lstset{
 basicstyle=\small\ttfamily,
@@ -89,6 +89,8 @@ Cette bibliothèque est écrite en OCaml car un langage expressif, fonctionnel, 
 
 \newpage
 \section{Réalisation}
+L'intégralité du code est disponible sur le GitHub du projet à l'adresse suivante :
+\url{https://github.com/jaunecitron/PSTL}
 
 \subsection{Interface OCaml / \verb&gcode&}
 La première réalisation a donc été de créer une interface permettant de représenter les différentes instructions \verb&gcode&. Il existe deux types d'instructions, les instructions G et M. Les instructions G se numérotent de 0 à 99 et sont destinées à paramétrer et actionner tout ce qui a un lien avec la tête d'impression, que nous appellerons par la suite extrudeur; et les instructions M se numérotent de 0 à 999 et sont destinées à paramétrer les différents éléments de l'imprimante 3D autres que ceux ayant un lien avec l'extrudeur. Il y a donc potentiellement 1100 instructions possibles en plus des commentaires.
