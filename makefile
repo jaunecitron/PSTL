@@ -9,4 +9,4 @@ all: $(EXEC)
 
 clean:
 	ocamlbuild -clean
-	rm -f bin/* *.aux *.nav *.out *.snm *.toc *.log *.pdf *.synctex.gz
+	rm -f bin/* *.aux *.nav *.out *.snm *.toc *.log *.pdf *.synctex.gz *.dvi *.fls
