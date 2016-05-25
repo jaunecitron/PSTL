@@ -9,9 +9,9 @@ bin/*
 *.log
 *.toc
 *.aux
-*dvi
-*fls
-.synctex.gz
+*.dvi
+*.fls
+*.synctex.gz
 *.pdf
 *.cm[oia]
 *~
