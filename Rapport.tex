@@ -5,6 +5,7 @@
 \usepackage{lmodern}
 \usepackage[english]{babel}
 \usepackage{verbatim}
+\usepackage{hyperref}
 \usepackage{graphicx}
 \usepackage{listings}
 
@@ -24,7 +25,8 @@ breaklines=true
          {ù}{{\`u}}1            
 }
 
-\author{Auteur : REN Marc\newline Encadrants : DAGAND Pierre-Evariste, ZIAT Ghiles, BOTBOL Vincent}
+\author{Auteur : REN Marc
+Encadrants : ZIAT Ghiles, BOTBOL Vincent}
 \newcommand{\authorLastName}{REN}
 \title{Bibliothèque logicielle pour impression 3D d’objets contraints}
 \newcommand{\experimentShortName}{Bibliothèque logicielle pour impression 3D d’objets contraints}
@@ -59,11 +61,11 @@ Nous détaillerons quelles sont les différentes étapes du schéma classique d'
 \section{Etat de l'art}
 La manière la plus courante pour imprimer l'objet 3D désiré est d'abord de le modéliser pour ensuite en générer un fichier au format \verb&gcode&.
 La procédure classique suit le schéma suivant :
-\includegraphics[scale=1]{img/EtatDeLart.png}
+\begin{center}\includegraphics[scale=0.35]{img/EtatDeLart.png}\end{center}
 \subsection{Modélisation}
 Il existe plusieurs logiciels de modélisation 3D tels que Blender ou bien Tinkercad, tous reposant sur le même principe. Pour tous, l'idée est d'assembler dans un espace donné différents volumes ou plans jusqu'à obtenir le rendu désiré. Le modèle obtenu peut ensuite être exporté sous différents formats. Le format le plus couramment utilisé est le \verb&stl&, un acronyme pour Standard Triangle Language. Un fichier \verb&stl& décrit un objet par un ensemble de triangles, chaque triangle étant lui même décrit par trois points et d'un vecteur normal permettant de déterminer l'orientation du triangle. Plus l'objet est complexe et plus le nombre de triangles le définissant est important.
 
-\subsection{Conversion en \verb&gcode&}
+\subsection{Conversion en gcode}
 Une fois l'objet modélisé et enregistré au format \verb&stl&, il est compilé au format \verb&gcode&.
 Plusieurs logiciels permettent cette conversion, les logiciels les plus populaires sont Slic3r et Cura et reposent tous sur le même principe.
 L'imprimante étant limitée par des contraintes physiques, la matière sortante de la tête d'impression étant solide et étant soumise à la gravité, il est impossible d'imprimer de la matière sous ce qui a déjà été sortie.
@@ -84,7 +86,8 @@ Nous avons décidé que le format de sortie serait le \verb&gcode&. Cela nous pe
 Par le biais de différentes séances de calibrage, nous pouvons voir comment réagit la matière portée à fusion, comment se comporte l'imprimante et les différents contraintes liées directement à la machine telle que l'espace d'impression disponible ou autres spécificités spécifiques à la machine et au matériau utilisé.
 Nous pouvons aussi définir, suivant les attentes, quelle sera la qualité de l'objet obtenu en spécifiant l'épaisseur de chaque couche et de l'enveloppe extérieure de l'objet, la façon de remplir l'objet et encore d'autres paramètres jouant sur la qualité et la précision de l'objet à imprimer
 Ainsi la procédure que nous proposons suit le schéma suivant :
-\includegraphics[scale=1]{img/Motivation.png} 
+\begin{center}\includegraphics[scale=0.35]{img/Motivation.png}\end{center}
+
 Cette bibliothèque est écrite en OCaml car un langage expressif, fonctionnel, fortement typé et multi-paradigme a été privilégié.
 
 \newpage
@@ -92,13 +95,13 @@ Cette bibliothèque est écrite en OCaml car un langage expressif, fonctionnel, 
 L'intégralité du code est disponible sur le GitHub du projet à l'adresse suivante :
 \url{https://github.com/jaunecitron/PSTL}
 
-\subsection{Interface OCaml / \verb&gcode&}
+\subsection{Interface OCaml / gcode}
 La première réalisation a donc été de créer une interface permettant de représenter les différentes instructions \verb&gcode&. Il existe deux types d'instructions, les instructions G et M. Les instructions G se numérotent de 0 à 99 et sont destinées à paramétrer et actionner tout ce qui a un lien avec la tête d'impression, que nous appellerons par la suite extrudeur; et les instructions M se numérotent de 0 à 999 et sont destinées à paramétrer les différents éléments de l'imprimante 3D autres que ceux ayant un lien avec l'extrudeur. Il y a donc potentiellement 1100 instructions possibles en plus des commentaires.
 Nous avons décidé de représenter dans notre interface un sous-ensemble du jeu d'instructions. Ce sous-ensemble contient les instructions dont nous avons eu besoin et qui nous permettent d'imprimer n'importe quel objet 3D avec précision.
 \newline
 
 Ces instructions sont les suivantes :
-\begin{lstisting}
+\begin{lstlisting}
   type instruction =
   | G0 of (float * float * float * float * float * int)
   | G0_move of (float * float) (* G0(x,y) rapid move without extrude *)
@@ -115,7 +118,7 @@ Ces instructions sont les suivantes :
   | Comment of (string)
   
   val instruction_to_string : instruction -> string
-\end{lstisting}
+\end{lstlisting}
 
     \subsubsection{Déplacements linéaires, G0 et G1}
 	\verb&G0(x,y,z,e,f,s)& permet de faire bouger l'extrudeur à la position (x,y,z) en faisant déplacer la matière plastique jusqu'au point e et s étant un flag signalant si l'on vérifie qu'un cas d'arrêt a été rencontré. La variante \verb&G0_move(x,y)& déplace l'extrudeur à la position (x,y), \verb&G0_speed(f)& définit la vitesse du déplacement à f mm/minutes de la commande G0 et \verb&G0_height(z)& bouge l'extrudeur à la hauteur z.
@@ -138,7 +141,7 @@ Nous disposons maintenant d'instructions nous permettant d'imprimer n'importe qu
 \newline
 
 L'environnement est défini de la manière suivant :
-\begin{lstisting}
+\begin{lstlisting}
 type environment=
   {
     mutable pos : point;
@@ -158,7 +161,7 @@ type environment=
     mutable plastic : float;
     mutable total_plastic : float;
   }
-\end{lstisting}
+\end{lstlisting}
 
 Énormément de choses peuvent être paramétrées, mais nous avons définis les paramètres suivants comme étant nécessaires.
 \begin{itemize}
@@ -187,7 +190,7 @@ Ayant toutes les instructions qui nous intéressent et pouvant avoir une trace d
 
 Comme dit précédemment, un programme en \verb&gcode& se résume en une suite d'instructions. Nous avons donc décidé de représenter un programme comme étant une liste d'instructions et déterminons des primitives permettant de déplacer l'extrudeur et d'imprimer définis par comme ce qui suit :
 
-\begin{lstisting}
+\begin{lstlisting}
 type t = instruction list
 
 val add_instruction : instruction -> program -> program
@@ -199,7 +202,7 @@ val print_to : environment -> float -> float -> instruction
 val lift_to : environment -> float -> instruction
 (lift_to env z) retourne l'instruction G0 Zz et met à jour l'environnement env
 val lift : environment -> instruction
-\end{lstisting}
+\end{lstlisting}
 
 Ces différentes primitives sont impératives et par effet de bord, modifient l'environnement qui a été donné en paramètre, d'où le fait que les différents champs du type environment soient mutables.
 Il est possible de passer à une version purement fonctionnelle. Pour respecter le paradigme fonctionnel recherché, nous pouvons faire en sorte que le programme soit fait d'instructions dont les paramètres dépendants de l'imprimante ne sont pas spécifiés. C'est ensuite en compilant le programme avec un environnement donné que ceux ci sont spécifiés.
@@ -214,7 +217,7 @@ Pour permettre des créer facilement une forme, nous avons décidé de définir 
 \newline
 
 Nous fournissons un ensemble de primitives permettant de créer et de manipuler ces formes, définies comme ce qui suit :
-\begin{lstisting}
+\begin{lstlisting}
 type polygone = point list
 
 val polygone_to_segments : polygone -> forme
@@ -230,20 +233,20 @@ val print_forme : environment -> forme -> program
 (print_forme env f) retourne le programme correspondant à la suite d'instructions permettant d'imprimer la forme f et met à jour l'environnement env
 val print_forme_inner : environment -> forme -> int -> float -> program
 (print_forme_inner env f direction shift_value) retourne le programme correspondant à la suite d'instructions permettant d'imprimer l'intérieur de la forme f par des lignes horizontales si direction vaut 0 et verticales si direction vaut 1 et espacées de shift_value
-\end{lstisting}
+\end{lstlisting}
 
 \subsection{Transformation de couches}
 Possédant maintenant une représentation d'une couche correcte et nous permettant de représenter n'importe quelle forme, nous pouvons maintenant traiter l'objectif du projet.
 Nous avons trois boucles
 
-\begin{lstisting}
+\begin{lstlisting}
 val print_forme_monotone : environment -> forme -> int -> program
 (print_forme_monotone env f c) retourne le programme correspondant à la suite d'instructions permettant d'imprimer la superposition de la forme f sur c couches
 val print_forme_iterative : environment -> (forme -> int -> forme) -> forme -> int -> program
 (print_forme_iterative env func f c) retourne le programme correspondant à la suite d'instructions permettant d'imprimer c couches, où chaque couche i représente la forme obtenue par (func f i)
 val print_forme_recursive : environment -> (forme -> forme) -> forme -> int -> program
 (print_forme_recursive env func f c) retourne le programme correspondant à la suite d'instructions permettant d'impreimer c couches, où pour toutes couches i tel que i > 0, la couche i représente la forme obtenue par (func (couche (i-1)), où (couche i) est la forme représentée par la couche i; et la couche 0 est représenté par la forme f
-\end{lstisting}
+\end{lstlisting}
 \newpage
 
 \subsection{Gaufrage}
@@ -278,7 +281,6 @@ val distance_carree : point -> point -> float
 (distance_carree p1 p2) renvoie la distance au carrée entre p1 et p2
 \end{lstlisting}
 
-\newline
 Type droite
 \begin{lstlisting}
 exception NotFound
@@ -296,7 +298,6 @@ val intersection : droite -> droite -> point
 (intersection d1 d2) renvoie le point d'intersetion entre d1 et d2 et renvoie l'exception InfiniteResult si les droites sont confondues et l'exception NotFound si les droites sont parallèles et distinctes
 \end{lstlisting}
 
-\newline
 Type segment
 \begin{lstlisting}
 type segment = {mutable droite:droite; p:point; q:point}
@@ -307,7 +308,6 @@ val intersection_segment_droite : segment -> droite -> point list
 (intersection_segment_droite seg d) retourne la liste des points d'intersection entre le segment seg et la droite d
 \end{lstlisting}
 
-\newline
 Type polygone
 \begin{lstlisting}
 type polygone = point list
@@ -334,7 +334,6 @@ val print_polygone_inner : environment -> polygone -> int -> float -> program
 (print_polygone_inner env polygone direction shift_value) retourne le programme correspondant à la suite d'instructions permettant d'imprimer l'intérieur du polygone par des lignes horizontales si direction vaut 0 et verticales si direction vaut 1 et espacées de shift_value
 \end{lstlisting}
 
-\newline
 Type program
 \begin{lstlisting}
 type t = instruction list
