@@ -59,7 +59,7 @@ Nous détaillerons quelles sont les différentes étapes du schéma classique d'
 \section{Etat de l'art}
 La manière la plus courante pour imprimer l'objet 3D désiré est d'abord de le modéliser pour ensuite en générer un fichier au format \verb&gcode&.
 La procédure classique suit le schéma suivant :
-\includegraphics[scale=1]{img/EtatDeLart.gif}
+\includegraphics[scale=1]{img/EtatDeLart.png}
 \subsection{Modélisation}
 Il existe plusieurs logiciels de modélisation 3D tels que Blender ou bien Tinkercad, tous reposant sur le même principe. Pour tous, l'idée est d'assembler dans un espace donné différents volumes ou plans jusqu'à obtenir le rendu désiré. Le modèle obtenu peut ensuite être exporté sous différents formats. Le format le plus couramment utilisé est le \verb&stl&, un acronyme pour Standard Triangle Language. Un fichier \verb&stl& décrit un objet par un ensemble de triangles, chaque triangle étant lui même décrit par trois points et d'un vecteur normal permettant de déterminer l'orientation du triangle. Plus l'objet est complexe et plus le nombre de triangles le définissant est important.
 
@@ -84,7 +84,7 @@ Nous avons décidé que le format de sortie serait le \verb&gcode&. Cela nous pe
 Par le biais de différentes séances de calibrage, nous pouvons voir comment réagit la matière portée à fusion, comment se comporte l'imprimante et les différents contraintes liées directement à la machine telle que l'espace d'impression disponible ou autres spécificités spécifiques à la machine et au matériau utilisé.
 Nous pouvons aussi définir, suivant les attentes, quelle sera la qualité de l'objet obtenu en spécifiant l'épaisseur de chaque couche et de l'enveloppe extérieure de l'objet, la façon de remplir l'objet et encore d'autres paramètres jouant sur la qualité et la précision de l'objet à imprimer
 Ainsi la procédure que nous proposons suit le schéma suivant :
-\includegraphics[scale=1]{img/Motivation.gif} 
+\includegraphics[scale=1]{img/Motivation.png} 
 Cette bibliothèque est écrite en OCaml car un langage expressif, fonctionnel, fortement typé et multi-paradigme a été privilégié.
 
 \newpage
@@ -364,5 +364,4 @@ val program_end : environment -> program
 val print : out_channel -> program -> unit
 (print fmt program) écrit dans fmt le programe program en gcode
 \end{lstlisting}
-\end{document}
 \end{document}
