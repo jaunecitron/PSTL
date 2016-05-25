@@ -4,7 +4,7 @@ open Point
 type environment=
   {
     mutable pos : point;
-    mutable positionning : int; (* 0 to absolute; 1 to relative *)
+    mutable positionning : bool; (* false to absolute; true to relative *)
     mutable height : float;
     mutable height_init : float;
     mutable layer : int;
@@ -24,7 +24,7 @@ type environment=
 let environment_init =
   {
     pos={x=0.;y=0.};
-    positionning=0;
+    positionning=true;
     height=0.3;
     height_init=0.3;
     layer=1;
@@ -45,5 +45,5 @@ let get_distance_plastic_rate env i =
   if i = 0 then env.speed_G0/.env.speed_extruder_rate else env.speed_G1/.env.speed_extruder_rate
     
 let env_to_string env=
-  sprintf "env = {\n pos=%s ;\n positionning=%d ;\n height = %f ;\n height_step = %f ;\n plastic=%f ;\n total_plastic=%f }\n"
+  sprintf "env = {\n pos=%s ;\n positionning=%B ;\n height = %f ;\n height_step = %f ;\n plastic=%f ;\n total_plastic=%f }\n"
     (point_to_string env.pos) env.positionning env.height env.lift_step env.plastic env.total_plastic

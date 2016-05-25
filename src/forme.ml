@@ -54,9 +54,6 @@ let resize_forme forme w h =
 		   ::res) in
   aux forme []
 
-let print_forme_current_place evironment forme =
-  "chantier"
-
 let print_forme environment forme =
   let reverse_forme = List.rev forme in
   let rec to_instructions f res =

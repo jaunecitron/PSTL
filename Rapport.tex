@@ -1,54 +1,275 @@
-\documentclass[a4paper,11pt]{article}
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-\usepackage{lmodern}
-\usepackage[francais]{babel}
+\documentclass[11pt, titlepage]{article}
 
-\title{Bibliothèque logicielle pour impression 3D d’objets contraints}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[english]{babel}
+\usepackage{verbatim}
+\usepackage{listings}
+\lstset{
+basicstyle=\small\ttfamily,
+inputencoding=utf8,
+columns=flexible,
+breaklines=true
+}
+\lstset{
+     literate=%
+         {à}{{\'a}}1
+         {é}{{\'e}}1
+         {è}{{\`e}}1
+         {ê}{{\^{e}}}1
+         {ô}{{\^{o}}}1
+         {ù}{{\`u}}1            
+}
+
 \author{REN Marc}
+\newcommand{\authorLastName}{REN}
+\title{Bibliothèque logicielle pour impression 3D d’objets contraints}
+\newcommand{\experimentShortName}{Bibliothèque logicielle pour impression 3D d’objets contraints}
+
+\usepackage{color}
+\usepackage{sectsty}
+\definecolor{WordSectionBlue}{RGB}{30, 90, 147}
+\allsectionsfont{\color{WordSectionBlue}}
 
 \begin{document}
 
 \maketitle
 \tableofcontents
-
-\begin{abstract}
-\end{abstract}
-
+\newpage
 \section{Introduction}
-L'impression 3D est un procédé existant depuis le milieu des années 80 qui connait un certain engouement grâce à la commercialisation d'imprimantes 3D destinées au grand public.
-Il existe plusieurs technologies permettant la conception d'un objet,
+L'impression 3D est le terme courant pour parler d'un procédé de fabrication additive. Ce procédé existe depuis le milieu des années 80 et connaît un certain engouement dû à la commercialisation d'imprimantes 3D destinées au grand public.
+Il existe plusieurs technologies permettant cette méthode de fabrication :
 le SLS ou Selective Laser Sintering, frittage sélectif par laser en français
 le SLA ou StereoLithograph Apparatus, l'impression par stéréolithographie (solidification d'une couche de plastique liquide par émission de lumière UV)
 le FDM ou Fuse Deposition Modeling, modelage par dépôt de matière en fusion
-C'est cette dernière qui est la plus utilisée par les imprimantes et dans le  cadre de notre projet, c'est cette technologie qui est employée, la matière en fusion étant du plastique.
+C'est cette dernière qui est la plus répandue et qui est employée par l'imprimante 3D de marque Ultimaker que nous avons utilisée tout au long de notre projet, la matière portée en fusion étant du plastique.
 
-Ces imprimantes 3D exécutent des programmes écrits en g-code. 
-Le G-Code est un langage impératif se limitant à de simples instructions de paramétrages et d'utilisation des différents outils présents sur la machine. 
-La modélisation 3D, destinée à l’impression, est soumise à certaines restrictions tant physiques que matérielles. À l’heure actuelle, plusieurs logiciels de modélisation 3D existent. Ces derniers, bien que très aboutis, ne permettent pas la conceptions d’objets récursifs.
+Cette imprimante est composée de plusieurs éléments dont les principaux sont des moteurs et des ventilateurs. L'un des moteurs sert à bouger la tête d'impression, que nous allons appeler par le suite extrudeur, l'axe des abscisses, un second pour bouger l'extrudeur sur l'axe des ordonnées, un troisième permettant de faire avancer ou reculer la matière à porter en fusion dans le tuyau menant à l'extrudeur et le dernier sert à bouger le support horizontal, sur lequel repose l'objet à imprimer, à la hauteur souhaitée.
+Une impression 3D se résume à déplacer l'extrudeur, avec ou sans dépôt de plastique, dans les limites de l'espace qui est disponible à la machine. Le gcode est le langage assembleur de la machine utilisée et nous permet, par le biais de différentes instructions, de contrôler et paramétrer les différents éléments la composant.
 
-Nous montrerons comment se déroule le schéma classique d'une impression 3D et ce qui nous a poussé a développer notre bibliothèque logicielle pour impression 3D. 
+Nous montrerons quelles sont les différentes étapes du schéma classique d'une impression 3D, quelles sont notre motivation et notre approche de ce domaine, comment a été réalisée cette bibliothèque logicielle.
+
 \newpage
-
 \section{Etat de l'art}
 La manière la plus courante pour imprimer l'objet 3D désiré est d'abord de le modéliser pour ensuite en générer un fichier au format g-code.
 
-Il existe plusieurs logiciels de modélisation 3D tels que blender ou bien Tinkercad, tous reposant sur le même principe. Pour tous, il faut assembler dans un espace donné différentes formes volumineuses jusqu'à obtenir le rendu désiré. Le modèle obtenu peut ensuite être exporté sous différents formats. Le format le plus couramment utilisé est le stl, un aconyme pour Standard Triangle Language. Un fichier stl décrit un objet par un ensemble de triangles, chaque triangle étant lui même décrit par trois vecteurs. Plus l'objet est complexe et plus le nombre de triangles le définissant est important.
+Il existe plusieurs logiciels de modélisation 3D tels que blender ou bien Tinkercad, tous reposant sur le même principe. Pour tous, il faut assembler dans un espace donné différentes volumes ou plans jusqu'à obtenir le rendu désiré. Le modèle obtenu peut ensuite être exporté sous différents formats. Le format le plus couramment utilisé est le stl, un aconyme pour Standard Triangle Language. Un fichier stl décrit un objet par un ensemble de triangles, chaque triangle étant lui même décrit par trois vecteurs. Plus l'objet est complexe et plus le nombre de triangles le définissant est important.
 
-Une fois l'objet modélisé et enregistré au format stl, il est converti au format g-code.
+Une fois l'objet modélisé et enregistré au format stl, il est converti au format gcode.
 Plusieurs logiciels permettent cette conversion, les logiciels les plus populaires sont Slic3r et Cura et reposent tous sur le même principe.
-L'imprimante étant limitée par des contraintes physiques, la matière sortant de la tête d'impression étant solide et étant soumise à la gravité, il est impossible d'imprimer de la matière sous ce qui a déjà été sortie.
-Pour obtenir le fichier g-code correspondant à l'objet modélisé, le logiciel parcourt alors l'objet de bas en haut et le découpe en plusieurs couches horizontales dont il génère le g-code.
+L'imprimante étant limitée par des contraintes physiques, la matière sortant de la tête d'impression étant solide et étant soumise à la gravité, il est impossible d'imprimer de la matière sous ce qui a déjà été sortie 
+Pour obtenir le fichier g-code correspondant à l'objet modélisé, le logiciel parcourt alors l'objet de bas en haut et le découpe en plusieurs couches horizontales dont il génère le gcode.
+
+Le fichier gcode généré, il suffit de le faire exécuter par l'imprimante 3D pour obtenir l'objet souhaité.
 
 \newpage
 \section{Motivations et Approche}
-Les logiciels de modélisation 3D, bien que très aboutis, ne permettent pas la conceptions d’objets récursifs. 
+Les logiciels de modélisation 3D, bien que très aboutis, ne permettent pas la conceptions d’objets récursifs.
+Une idée du projet est de voir un objet en 3D comme étant la superposition de plusieurs couches. Chaque couches pouvant être définies les unes par rapport aux autres, donc de les définir itérativement ou récursivement, ou alors indépendentes les unes aux autres.
+En développant une bibliothèque, on souhaite donner la possibilité de programmer un objet et ainsi de doter l'impression 3D des différents outils de la programmation tels que les boucles, d'alternatifs et autres.
 
-Il a été décidé que cette bibliothèque produise des fichiers en g-code, cela nous permet d'avoir un meilleur contrôle sur le rendu. Certaines caractéristiques sont propres à chaque machines mais aussi au matériel utilisé, des paramètres que ne prennent pas en compte les logiciels convertissant les fichiers stl en fichier g-code.
+Nous avons décidé que le format de sortie est le gcode. Cela nous permet d'avoir un contrôle plus fin de ce que fait la machine et ainsi d'avoir un résultat plus précis que ce que pourrait nous donner un logiciel de découpe d'un modèle 3D.
+Nous pouvons par exemple définir suivant les attentes quelle sera l'épaisseur de chaque couche et jouant sur la quantité de matière fournie a l'extrudeur.
+
+Cette bibliothèque est écrite en OCaml car un langage fonctionnel et multi-paradigme a été privilégié.
+
 \newpage
 \section{Réalisation}
+
+\subsection{Instructions}
+La première réalisation a donc été de représenter ces différentes instructions. Il existe deux types d'instructions, les instructions G et M. Les instructions G se numérotent de 0 à 99 et les instructions M se numérotent de 0 à 999; il y a donc potentiellement 1100 instructions possibles en plus des commentaires.
+Pour pouvoir représenter toutes les instructions, il aurait fallu représenter les 1100 possibilités mais pour une question de limite de temps, seules les instructions qui ont été jugées les plus utiles ont été réalisées.
+
+\begin{lstlisting}
+  type instruction =
+  | G0 of (float * float * float * float * float * int)
+  | G0_move of (float * float) (* G0(x,y) rapid move without extrude *)
+  | G0_speed of (float)
+  | G0_height of (float) (* G0_height(z) move to height z*)
+  | G1 of (float * float * float * float * float * float)(* G1(x,y,e) move with extrude *)
+  | G1_print of (float * float * float)
+  | G1_speed of (float)
+  | G10 of (int option) (* G10 retract *)
+  | G11 of (int option) (* G11 retract/unretract*)
+  | G28 of (string)  (* G28(x,y,z) move to origin *)
+  | G92 of (float * float * float * float) (* G92(x,y,z,e) allow programming of absolute zero point *)
+  | G92_init of (float) (* G92(e) *)
+  | M106_fan_speed of (int) (* M106(s) turn fan 0 at speed s *)
+  | M107
+  | Comment of (string)
+  
+  val instruction_to_string : instruction -> string
+  	(instruction_to_string instr) retourne l'instruction instr compilé en gcode
+\end{lstlisting}
+
+Ces instructions ont été définies comme étant primordiales.
+
+    \subsubsection{Déplacements linéaires, G0 et G1}
+	\verb&G0(x,y,z,e,f,s)& permet de faire bouger l'extrudeur à la position (x,y,z) en faisant déplacer la matière plastique jusqu'à e et s étant un flag signalant si l'on vérifie qu'un cas d'arrêt a été rencontré. La variante \verb&G0_move(x,y)& déplace l'extrudeur à la position (x,y), \verb&G0_speed(f)& définit la vitesse du déplacement à f mm/minutes de la commande G0 et \verb&G0_height(z)& bouge l'extrudeur à la hauteur z.
+De la même façon, \verb&G1(x,y,z,e,f,s)& permet de déplacer l'extrudeur de la même façon que \verb&G0(x,y,z,e,f,s)&. La variante \verb&G1_speed(f)& a la même fonction que G0 pour la commande G1 et \verb&G1_print(x,y,e)& déplace la tête d'impression à la position (x,y) et déplace la matière plastique jusqu'à e.
+L'existence de deux commandes permettant le déplacement de l'extrudeur nous permet d'en utiliser laissant un dépôt de matière et l'autre non. Nous avons dédcidé suivre les normes qui ont été définies par les actuels logiciels de découpe d'un fichier stl, G0 est donc notre déplacement sans dépôt et G1 celui avec.
+	\subsubsection{Rétractation, "dérétractation" de plastique, G10 et G11}
+	G10 permet de faire remonter, "rétracter" de la matière plastique et ainsi garantir que l'extrudeur n'aura pas de reste de la dernière instruction.
+G11 permet de  faire redescendre, "dérétracter" de la matière plastique et ainsi garantir que l'extrudeur aura la matière nécessaire pour commencer son dépôt.
+Ces commandes sont primordiales si l'on souhaite imprimer un objet avec précision.
+	\subsubsection{Origine et paramétrage, G28 et G92}
+	\verb&G28(x,y,z)& permet de déplacer l'extrudeur à l'origine de l'axe des abscisses si x est vrai, l'origine de l'axe des ordonnées si y est vrai et à la hauteur initiale si z est vrai.
+\verb&G92(x,y,z,e)& permet de définir l'extrudeur étant à la position x de l'origine des abscisses si x est défini, à la position y de l'axe des ordonnées si y est défini, à la hauteur z de l'origine si z est défini et définit le plastique étant à la position e de l'origine. La variante \verb&G92_init(e)& nous permet de définir le plastique étant à la position e de l'origine. Cette instruction nous permet de garantir la position du plastique et est utile car la machine est programmée de sorte à ce que avant chaque impression, un dépôt de plaslestique est fait.
+	\subsubsection{Ventilateurs, M106 et M107}
+	\verb&M106_fan_speed(s)& permet paramétrer les ventilateurs à la puissance n, n étant un entier de 0 à 255.
+M107 permet d'éteindre les ventilateurs.
+Les ventilateurs nous permettent de refroidir la matière en fusion et de plus ou moins la solidifier lorsqu'elle sort de l'extrudeur.
+	\subsubsection{Compilation}
+	La méthode \verb&instruction_to_string& nous permet de compiler chaque instruction en gcode.
+
+\subsection{Environnement}
+Nous disposons maintenant d'instructions nous permettant d'imprimer n'importe quelle forme mais celles ci, en s'exécutant, modifient l'état de la machine et certaines dépendent des caractéristiques de la machine. Chaque paramétrages modifient l'état de la machine et chaque déplacement, une finie, laisse l'extrudeur à la position où l'instruction l'a emmenée. Il y a donc une nécessité de connaître à chaque instruction quel est l'état de la machine. Nous définissons cet état comme étant l'environnement de notre programme et suivant l'environnement, cela nous permet entre autres de savoir la quantité de matière adéquate à extraire.
+
+\begin{lstlisting}
+type environment=
+  {
+    mutable pos : point;
+    mutable positionning : bool; (* false to absolute; true to relative *)
+    mutable height : float;
+    mutable height_init : float;
+    mutable layer : int;
+    mutable lift_step : float;
+    mutable gaufrage : float;
+    mutable time : float;
+    mutable speed_G0 : float;
+    mutable speed_G1 : float;
+    mutable speed_extruder_rate : float;
+    mutable fan_speed : int;
+    mutable extruder_radius : float;
+    mutable printing : bool;
+    mutable plastic : float;
+    mutable total_plastic : float;
+  }
+\end{lstlisting}
+
+Enormément de choses peuvent être paramêtrées, mais nous avons définis les paramètres suivants comme étant primordiaux.
+\begin{itemize}
+  \item \verb&pos& : contient la position actuelle de l'extrudeur 
+  \item \verb&positionning& : signale si les déplacements sont relatifs à la position actuelle ou absolus
+  \item \verb&height& :  hauteur actuelle de l'extrudeur
+  \item \verb&height_init& :  hauteur initiale de l'extrudeur
+  \item \verb&layer& : définit la couche courante
+  \item \verb&lift_step& : espace entre chaque couche
+  \item \verb&time& : temps d'impression actuel
+  \item \verb&speed_G0& : vitesse de déplacement de la commande G0
+  \item \verb&speed_G1& : vitesse de déplacement de la commande G1
+  \item \verb&speed_extruder_rate& : ratio vitesse / quantité de matière à extraire
+  \item \verb&fan_speed& : vitesse des ventilateurs
+  \item \verb&extruder_radius& : rayon de la la tête d'impression
+  \item \verb&printing& : signale si l'imprimante est en cours d'impression
+  \item \verb&plastic& : quantité de plastique utilisée depuis la dernière remise à 0
+  \item \verb&total_plastic& : quantité de plastique utilisée depuis le début de l'impression
+\end{itemize}
+Tous les champs du type environment sont définis comme mutables, nous en parlerons ultérieurement.
+
+\subsection{Programme}
+Ayant toutes les instructions qui nous intéressent et pouvant avoir une trace de l'état de la machine à tous instants, nous pouvons maintenant théoriquement construire un programme en gcode permettant d'imprimer n'importe quelles formes imprimables. Nous parlerons d'imprimable les formes se soumettant aux contraintes physiques de l'impression 3D.
+
+Comme dit précédemment, un programme en gcode se résume en une suite d'instructions. Nous avons donc décidé de représenté un programme comme étant une liste d'instructions.
+
+\begin{lstlisting}
+type t = instruction list
+
+val add_instruction : instruction -> program -> program
+(add_instruction instr program) retourne le programme constitué de program et de instr en dernière ligne
+val move_to : environment -> float -> float -> instruction
+(move_to env x y) retourne l'instruction G0 Xx Yy et met à jour l'environnement env
+val print_to : environment -> float -> float -> instruction  
+(print_to env x y) retourne l'instruction G1 Xx Yy Ee où e est calculé suivant le ratio de l'environnement env et met à jour l'environnement env 
+val print_point : environement -> instruction
+(print_point env) retourne l'instruction G1 Xx Yy Ee où x et y correspondent à la position actuelle de l'extrudeur, e calculé suivant le rayon de la tête de l'extrudeur et le ratio contenus dans l'environnement env et met à jour env
+val move : environment -> float -> float -> instruction
+(move env x y) retourne l'instruction G0 Xx' Yy' où x' et y' est la translation de la position courante de l'extrudeur de (x,y) et met à jour l'environnement env
+val print : environment -> float -> float -> instruction
+(print env x y) retourne l'instruction G1 Xx' Yy' où x' et y' est la translation de la position courante de l'extrudeur de (x,y) et met à jour l'environnement env
+val lift_to : environment -> float -> instruction
+(lift_to env z) retourne l'instruction G0 Zz et met à jour l'environnement env
+val lift : environment -> instruction
+(lift env) retourne l'instruction G0 Zz où z est l'espacement entre deux couches définit dans l'environnement env et met à jour env
+val comment_layer : environment -> instruction
+(comment_layer env) retourne l'instruction ;LAYER: l où l est la couche actuelle dans laquelle se trouve l'extrudeur, information comprise dans l'environnement env, et met à jour env
+val program_init : environment -> program
+(program_init env) retourne l'entête d'un programme écrit en gcode suivant l'environnement env
+val program_end : environment -> program
+(program_end env) retourne la fin d'un programme écrit en gcode suivant l'environnement env
+val print : out_channel -> program -> unit
+(print fmt program) écrit dans fmt le programe program en gcode
+\end{lstlisting}
+
+On remarque que toutes les fonctions modifiant l'état de l'imprimante, déplaçant la tête d'impression par exemple, modifient par effet de bord l'environnement passé en variable. C'est aussi pour cela que tous les champs du type environment sont mutables. Cela va en opposition à l'esprit d'un langage fonctionnel et du multi-paradigme cherché. Par manque d'expériences en OCaml, nous avons choisi d'aller au plus simple et de procéder par effet de bord. Pour respecter le paradigme fonctionnel recherché, nous aurions dû faire en sorte que le programme soit fait d'instructions dont les paramètres dépendants de l'imprimante ne sont pas spécifiés. C'est ensuite en compilant le programme avec un environnement donné que ceux ci auraient dû être spécifiés.
+
+\subsection{Définition d'une couche}
+Maintenant que nous pouvons représenter n'importe quel programme en gcode, ou du moins d'en réaliser un équivalent dont le résultat serait similaire, il nous reste à définir la représentation d'une couche, l'approche étant de définir un objet 3D comme une superposition de couches.
+
+\subsection{Polygone}
+La première idée pour représenter une couche a été de voir chaque couche comme étant un polygone. Nous avons décidé de représenter un polygone comme étant une liste de points.
+
+\begin{lstlisting}
+type polygone = point list
+	    
+val polygone_regulier : point -> float -> int -> polygone
+(polygone_regulier centre rayon nb_cotes) retourne le polygone régulier de nb_cotes côtés, dont le premier point a pour coordonnées polaire (centre,0) et dont le cercle circonscrit est de centre centre et de rayon rayon
+val polygone_regulier_angle : point -> float -> int -> float -> polygone
+(polygone_regulier_angle centre rayon nb_cotes angle) retourne le polygone régulier de nb_cotes côtés, dont le premier point a pour coordonnées polaire (centre,rayon) et dont le cercle circonscrit est de centre centre et de rayon rayon
+val add point : point -> polygone -> polygone
+(add_point point polygone) retourne le polygone définit par les points polygones et dont le dernier point est point
+val height : polygone -> float
+(height polygone) retourne la hauteur du polygone polygone
+val width : polygone -> float
+(width polygone) retourne la larger du polygone polygone
+val barycentre_polygone : polygone -> point
+(barycentre_polygone p) retourne le barycentre du polygone p
+val resize_polygone : polygone -> float -> float -> polygone 
+(resize_polygone polygone w h) retourne le polygone p redimensionné, dont la largeur est augmentée de w et la hauteur de h
+val print_polygone_current_place : environment -> polygone -> program
+(print_polygone_current_place env polygone) retourne le programme correspondant à la suite d'instructions permettant d'imprimer le polygone polygone à la position courante de l'extrudeur et met à jour l'environnement env
+val print_polygone : environment -> polygone -> program
+(print_polygone env polygone) retourne le programme correspondant à la suite d'instructions permettant d'imprimer le polygone polygone et met à jour l'environnement env
+val print_polygone_inner : environment -> polygone -> int -> float -> program
+(print_polygone_inner env polygone direction shift_value) retourne le programme correspondant à la suite d'instructions permettant d'imprimer l'intérieur du polygone par des lignes horizontales si direction vaut 0 et verticales si direction vaut 1 et espacées de shift_value
+\end{lstlisting}
+
+\subsection{Forme}
+Cette vision simpliste d'une couche nous impose que chaque couche est un ensemble de points fortement connexe. D'où la nécessité de trouver une nouvelle représentation. Nous décidons alors de représenter une couche comme une liste de segments
+
+\begin{lstlisting}
+val polygone_to_segments : polygone -> forme
+(polygone_to_segments p) retourne la forme équivalente au polygone p
+
+type forme = segment list
+
+val barycentre_forme : forme -> point
+(barycentre_forme f) retourne le barycentre de la forme f
+val resize_forme : forme -> w -> h -> forme
+(resize_forme f w h) retourne la forme f redimensionnée, dont la largeur est augmentée de w et la hauteur de h
+val print_forme : environment -> forme -> program
+(print_forme env f) retourne le programme correspondant à la suite d'instructions permettant d'imprimer la forme f et met à jour l'environnement env
+val print_forme_inner : environment -> forme -> int -> float -> program
+(print_forme_inner env f direction shift_value) retourne le programme correspondant à la suite d'instructions permettant d'imprimer l'intérieur de la forme f par des lignes horizontales si direction vaut 0 et verticales si direction vaut 1 et espacées de shift_value
+\end{lstlisting}
+
+\subsection{Boucles}
+Possédant maintenant une représentation d'une couche correcte et nous permettant de représenter n'importe quelle forme, nous pouvons maintenant traiter l'objectif du projet.
+Nous avons trois boucles
+
+\begin{lstlisting}
+val print_forme_monotone : environment -> forme -> couches
+(print_forme_monotone env f c) retourne le programme correspondant à la suite d'instructions permettant d'imprimer la superposition de la forme f sur c couches
+val print_forme_iterative : environment -> (forme -> int -> forme) -> forme -> couches
+(print_forme_iterative env func f c) retourne le programme correspondant à la suite d'instructions permettant d'imprimer c couches, où chaque couche i représente la forme obtenue par (func f i)
+val print_forme_recursive : environment -> (forme -> forme) -> forme -> couches
+(print_forme_recursive env func f c) retourne le programme correspondant à la suite d'instructions permettant d'impreimer c couches, où pour toutes couches i tel que i > 0, la couche i représente la forme obtenue par (func (couche (i-1)), où (couche i) est la forme représentée par la couche i; et la couche 0 est représenté par la forme f
+\end{lstlisting}
 \newpage
-\section{Expérimentations}
-\newpage
+
 \section{Conclusion}
+Au cours de ce semestre, nous avons réussi à donner une représentation d'un programme en gcode et d'une couche et ainsi réussi à fournir différents outils permettant de définir une couche par rapport à une autre. Néanmoins nous ne vérifions pas si le résultat obtenu est imprimable.
+
+Ce projet m'a permis d'approfondir mes connaissances en OCaml, de prendre connaissance des outils permettant 
 \end{document}
