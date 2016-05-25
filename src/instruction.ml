@@ -10,7 +10,7 @@ type instruction =
   | G1_speed of (float)
   | G10 of (int option) (* G10 retract *)
   | G11 of (int option) (* G11 retract/unretract*)
-  | G28 of (string)  (* G28(x,y,z) move to origin *)
+  | G28 of (string)  (* G28(s) move to origin *)
   | G92 of (float * float * float * float) (* G92(x,y,z,e) allow programming of absolute zero point *)
   | G92_init of (float) (* G92(e) *)
   | M106_fan_speed of (int) (* M106(s) turn fan 0 at speed s *)
